@@ -138,10 +138,9 @@ async function fetchCodingHours(apiKey: string): Promise<number> {
 export async function fetchStats(): Promise<Stats> {
   const token = process.env.GH_PAT ?? process.env.GITHUB_TOKEN;
   const wakatimeKey = process.env.WAKATIME_API_KEY;
-  if (!token) throw new Error("GH_PAT (or GITHUB_TOKEN) is not set");
-  if (!wakatimeKey) throw new Error("WAKATIME_API_KEY is not set");
+  // presence is checked by generate.ts; an invalid (present) key throws below
 
-  const profile = await githubGraphql(token, PROFILE_QUERY, { login: GITHUB_LOGIN });
+  const profile = await githubGraphql(token!, PROFILE_QUERY, { login: GITHUB_LOGIN });
   const user = profile.user;
   const ownRepos = user.repositories.nodes as { name: string; isFork: boolean; stargazerCount: number }[];
   const sourceRepos = ownRepos.filter((repo) => !repo.isFork);
