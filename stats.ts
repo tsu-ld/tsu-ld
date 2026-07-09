@@ -16,18 +16,6 @@ export type Stats = {
   codingHours: number;
 };
 
-export const MOCK_STATS: Stats = {
-  uptime: formatUptime(BIRTHDATE, new Date()),
-  repoCount: 12,
-  contributedCount: 8,
-  stars: 34,
-  commits: 1204,
-  followers: 15,
-  locAdded: 312456,
-  locDeleted: 98234,
-  codingHours: 1032,
-};
-
 function formatUptime(birth: Date, now: Date): string {
   let years = now.getUTCFullYear() - birth.getUTCFullYear();
   let months = now.getUTCMonth() - birth.getUTCMonth();
