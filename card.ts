@@ -56,7 +56,7 @@ const ROLES = [
   "cat dad",
 ];
 
-const BIO_LINES = ["shipping software circa 2021,", "mostly with TypeScript, React,", "Rust, and friends."];
+const BIO_LINES = ["I like building things and", "figuring stuff out as I go."];
 
 function formatNumber(value: number): string {
   return value.toLocaleString("en-US");
