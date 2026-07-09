@@ -1,0 +1,13 @@
+{
+  "name": "tsu-ld",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "bun generate.ts",
+    "build-assets": "bun build-assets.ts"
+  },
+  "devDependencies": {
+    "fontkit": "^2.0.4",
+    "wawoff2": "^2.0.1"
+  }
+}
