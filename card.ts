@@ -45,7 +45,9 @@ const FOOTER_BASELINE = 417;
 const BADGE_FONT_SIZE = 17;
 const GRID_CELL = 48; // same cell size as the portfolio's grid overlay
 const TYPING_SECONDS_PER_CHAR = 0.08;
+const DELETING_SECONDS_PER_CHAR = 0.04; // deleting reads better at twice the typing speed
 const HOLD_SECONDS = 2.2;
+const CARET_BLINK_HALF_PERIOD_SECONDS = 0.55;
 
 const ROLES = [
   "software design engineer",
@@ -84,11 +86,13 @@ function discreteAnimate(attribute: string, pairs: [number, number][], totalSeco
   return `<animate attributeName="${attribute}" calcMode="discrete" values="${values}" keyTimes="${keyTimes}" dur="${totalSeconds}s" begin="0s" repeatCount="indefinite"/>`;
 }
 
-// per-role clip rect types the text out; one shared caret hops along with it
+// per-role clip rect types the text out, holds, then deletes it back; one shared caret follows
 function renderTypewriter(palette: Palette): string {
-  const slots = ROLES.map((role) => role.length * TYPING_SECONDS_PER_CHAR + HOLD_SECONDS);
+  const slots = ROLES.map((role) => role.length * (TYPING_SECONDS_PER_CHAR + DELETING_SECONDS_PER_CHAR) + HOLD_SECONDS);
   const total = slots.reduce((sum, slot) => sum + slot, 0);
   const caretSteps: [number, number][] = [];
+  // caret stays solid while typing/deleting and only blinks during the hold
+  const blinkSteps: [number, number][] = [[0, 1]];
   let cursor = 0;
   const parts: string[] = [];
 
@@ -104,7 +108,20 @@ function renderTypewriter(palette: Palette): string {
       widthSteps.push([stepTime, chars * ROLE_CHAR_WIDTH]);
       caretSteps.push([stepTime, PAD_LEFT + chars * ROLE_CHAR_WIDTH + 3]);
     }
-    if (end < total) widthSteps.push([end, 0]);
+    const typingEnd = start + role.length * TYPING_SECONDS_PER_CHAR;
+    const holdEnd = typingEnd + HOLD_SECONDS;
+    let blinkVisible = 1;
+    for (let t = CARET_BLINK_HALF_PERIOD_SECONDS; t < HOLD_SECONDS - 1e-6; t += CARET_BLINK_HALF_PERIOD_SECONDS) {
+      blinkVisible = blinkVisible ? 0 : 1;
+      blinkSteps.push([typingEnd + t, blinkVisible]);
+    }
+    blinkSteps.push([holdEnd, 1]);
+    for (let chars = role.length - 1; chars >= 0; chars--) {
+      const stepTime = holdEnd + (role.length - chars) * DELETING_SECONDS_PER_CHAR;
+      widthSteps.push([stepTime, chars * ROLE_CHAR_WIDTH]);
+      // skip chars=0: the next role's first caret step lands at the same time and spot
+      if (chars > 0) caretSteps.push([stepTime, PAD_LEFT + chars * ROLE_CHAR_WIDTH + 3]);
+    }
 
     const opacitySteps: [number, number][] =
       start === 0 ? [[0, 1], [end, 0]] : end >= total ? [[0, 0], [start, 1]] : [[0, 0], [start, 1], [end, 0]];
@@ -118,7 +135,7 @@ function renderTypewriter(palette: Palette): string {
   const caret =
     `<rect y="${ROLES_BASELINE - 12}" width="7" height="14" fill="${palette.primary}" x="${PAD_LEFT + 3}" opacity="0">` +
     discreteAnimate("x", caretSteps, total) +
-    `<animate attributeName="opacity" calcMode="discrete" values="1;0" keyTimes="0;0.5" dur="1.1s" repeatCount="indefinite"/>` +
+    discreteAnimate("opacity", blinkSteps, total) +
     `</rect>`;
 
   return parts.join("") + caret;
