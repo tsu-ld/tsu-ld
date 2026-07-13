@@ -1,0 +1,13 @@
+{
+  "name": "tsu-ld",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "bun src/generate.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "typescript": "^5.7.2"
+  }
+}
