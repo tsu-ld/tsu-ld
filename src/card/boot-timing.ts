@@ -1,0 +1,11 @@
+export const BOOT_HEADLINE_SECONDS = 0.5;
+export const BOOT_STATS_BEGIN_SECONDS = 0.15;
+export const BOOT_STAT_STAGGER_SECONDS = 0.08;
+export const BOOT_STAT_FADE_SECONDS = 0.35;
+export const BOOT_SPARK_BEGIN_SECONDS = 0.8;
+export const BOOT_SPARK_DRAW_SECONDS = 0.7;
+
+export const TYPING_SECONDS_PER_CHAR = 0.08;
+export const DELETING_SECONDS_PER_CHAR = 0.04;
+export const HOLD_SECONDS = 2.2;
+export const CARET_BLINK_HALF_PERIOD_SECONDS = 0.55;
