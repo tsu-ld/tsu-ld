@@ -1,0 +1,27 @@
+name: generate card
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # daily, 03:17 in Argentina
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run generate
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+      - name: commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add light.svg dark.svg
+          git diff --staged --quiet || (git commit -m "chore: refresh profile card" && git push)
