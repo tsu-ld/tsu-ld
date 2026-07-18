@@ -2,7 +2,7 @@ name: generate card
 
 on:
   schedule:
-    - cron: "17 6 * * *" # daily, 03:17 in Argentina
+    - cron: "0 0 * * *" # daily
   workflow_dispatch:
 
 permissions:
