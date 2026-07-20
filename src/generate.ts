@@ -1,7 +1,7 @@
 import { renderCard } from "./card/render-card";
 import { collectStats } from "./stats/collect";
 
-const githubToken = process.env.GH_PAT ?? process.env.GITHUB_TOKEN;
+const githubToken = process.env.GH_PAT;
 const wakatimeKey = process.env.WAKATIME_API_KEY;
 
 if (!githubToken || !wakatimeKey) {
